@@ -203,6 +203,106 @@ AOG 有两个关键概念：**服务(Service)** 和 **服务提供商(Service Pr
     aog delete model <model_name>  --provider <provider_name>
 
 
+通过以下命令进行 AOG 服务的导入导出
+
+.. code-block:: bash
+
+    # 根据指定.aog文件导入服务配置
+    aog import --file xxx/.aog
+
+    # 导出当前服务配置到指定位置
+    # 可选参：
+    #   service 指定服务，未指定则导出全部
+    #   provider 指定服务提供商，未指定则导出全部
+    #   model 指定模型，未指定则导出全部
+    aog export --service chat --provider local_ollama_chat --model --output ./
+
+
+
+服务导出的 ``.aog`` 文件可以直接用作导入使用，也就是说，您可以从设备 ``A`` 上导出 ``.aog`` 文件然后导入到设备 ``B`` 的 ``AOG`` 中，以实现服务的快速共享。
+
+导出的  ``.aog``  文件示例如下：
+
+.. code-block:: json
+
+    {
+        "version": "v0.2",
+        "services": {
+            "models": {
+                "service_providers": {
+                    "local": "local_ollama_models",
+                },
+                "hybrid_policy": "default"
+            },
+            "chat": {
+                "service_providers": {
+                    "local": "local_ollama_chat",
+                    "remote": "remote_deepseek_chat"
+                },
+                "hybrid_policy": "default"
+            },
+            "embed": {
+                "service_providers": {
+                    "local": "local_ollama_embed",
+                },
+                "hybrid_policy": "default"
+            }
+        },
+        "service_providers": {
+            "local_ollama_chat": {
+                "service_name": "chat",
+                "service_source": "local",
+                "desc": "Local ollama chat/completion",
+                "api_flavor": "ollama",
+                "method": "POST",
+                "url": "http://localhost:11434/api/chat",
+                "auth_type": "none",
+                "auth_key": "",
+                "models": [
+                    "qwen2.5:0.5b",
+                    "qwen2:0.5b"
+                ]
+            },
+            "remote_deepseek_chat": {
+                "desc": "remote deepseek chat/completion",
+                "service_name": "chat",
+                "service_source": "remote",
+                "api_flavor": "ollama",
+                "method": "POST",
+                "url": "https://api.lkeap.cloud.tencent.com/v1/chat/completions",
+                "auth_type": "apikey",
+                "auth_key": "xxxxxxxxxx",
+                "models": [
+                    "deepseek-v3",
+                    "deepseek-r1"
+                ]
+            },
+            "local_ollama_models": {
+                "desc": "List local ollama models",
+                "service_name": "models",
+                "service_source": "local",
+                "api_flavor": "ollama",
+                "method": "GET",
+                "url": "http://localhost:11434/api/tags",
+                "auth_type": "none",
+                "auth_key": ""
+            },
+            "local_ollama_embed": {
+                "desc": "Local ollama embed",
+                "service_name": "embed",
+                "service_source": "local",
+                "api_flavor": "ollama",
+                "method": "POST",
+                "url": "http://localhost:11434/api/embed",
+                "auth_type": "none",
+                "auth_key": "",
+                "models": [
+                    "quentinz/bge-large-zh-v1.5"
+                ]
+            }
+        }
+    }
+
 
 调用 AOG API
 =========================
@@ -245,17 +345,78 @@ AOG API 是一个 Restful API。您可以通过与调用云 AI 服务（如 Open
 .. code-block:: json
 
     {
-        "version": "0.2",
-        "service": {
+        "version": "v0.2",
+        "services": {
+            "models": {
+                "service_providers": {
+                    "local": "local_ollama_models",
+                },
+                "hybrid_policy": "default"
+            },
             "chat": {
+                "service_providers": {
+                    "local": "local_ollama_chat",
+                    "remote": "remote_deepseek_chat"
+                },
+                "hybrid_policy": "default"
+            },
+            "embed": {
+                "service_providers": {
+                    "local": "local_ollama_embed",
+                },
+                "hybrid_policy": "default"
+            }
+        },
+        "service_providers": {
+            "local_ollama_chat": {
+                "service_name": "chat",
+                "service_source": "local",
+                "desc": "Local ollama chat/completion",
+                "api_flavor": "ollama",
+                "method": "POST",
+                "url": "http://localhost:11434/api/chat",
+                "auth_type": "none",
+                "auth_key": "",
                 "models": [
                     "qwen2.5:0.5b",
-                    "qwen2.5:7b"
+                    "qwen2:0.5b"
                 ]
             },
-            "text-to-image": {
+            "remote_deepseek_chat": {
+                "desc": "remote deepseek chat/completion",
+                "service_name": "chat",
+                "service_source": "remote",
+                "api_flavor": "ollama",
+                "method": "POST",
+                "url": "https://api.lkeap.cloud.tencent.com/v1/chat/completions",
+                "auth_type": "apikey",
+                "auth_key": "xxxxxxxxxx",
                 "models": [
-                    "stable-diffusion-1.5-int4"
+                    "deepseek-v3",
+                    "deepseek-r1"
+                ]
+            },
+            "local_ollama_models": {
+                "desc": "List local ollama models",
+                "service_name": "models",
+                "service_source": "local",
+                "api_flavor": "ollama",
+                "method": "GET",
+                "url": "http://localhost:11434/api/tags",
+                "auth_type": "none",
+                "auth_key": ""
+            },
+            "local_ollama_embed": {
+                "desc": "Local ollama embed",
+                "service_name": "embed",
+                "service_source": "local",
+                "api_flavor": "ollama",
+                "method": "POST",
+                "url": "http://localhost:11434/api/embed",
+                "auth_type": "none",
+                "auth_key": "",
+                "models": [
+                    "quentinz/bge-large-zh-v1.5"
                 ]
             }
         }

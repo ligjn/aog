@@ -242,3 +242,92 @@ Response Schema
       "id": "73591b79-d194-9bca-8bb5-xxxxxxxxxxxx"
     }
 
+
+
+Text-to-image 服务
+=====================
+
+
+自定义服务提供商属性
+--------------------------------------------
+
+除了在 :ref:`Metadata of AOG Service
+Provider` 中定义的常见属性外，聊天服务提供商还可以将以下属性放入服务提供商元数据的 ``custom_properties`` 字段中。
+
+.. list-table::
+   :header-rows: 1
+
+   * - 自定义属性
+     - 值
+     - 描述
+   * - max_input_tokens
+     - integer
+     - 上下文窗口宽度或允许输入的最大token数
+
+请求格式
+--------------------------------------------
+
+请求头
+___________
+
+参见 :ref:`Common Fields in Header of Request`
+
+请求
+______________
+
+除了在 :ref:`Common Fields in Request Body` 中定义的字段外，服务在其请求 JSON 体中也可能包含以下字段：
+
+.. list-table::
+   :header-rows: 1
+   :widths: 10 35 10 45
+
+   * - 附加 JSON 字段
+     - 值
+     - 是否必需
+     - 描述
+   * - prompt
+     - string
+     - 必填
+     - 文生图提示词
+   * - model
+     - string
+     - 可选
+     - text-to-image模型
+
+
+Response Schema
+--------------------------------------------
+
+除了在 :ref:`Common Fields in Response Body` 中定义的字段外，该服务在其响应 JSON 体中可能还有以下字段：
+
+.. list-table::
+   :header-rows: 1
+   :widths: 10 35 10 45
+
+   * - 附加 JSON 字段
+     - 值
+     - 是否必需
+     - 描述
+   * - id
+     - string
+     - 必填
+     - 请求id
+   * - data
+     - array of object
+     - 必填
+     - text-to-image结果
+
+示例
+----------------
+
+返回的嵌入可能如下所示
+
+.. code-block:: json
+    {
+    "data": {
+        "url": "https://dashscope-result-wlcb-acdr-1.oss-cn-wulanchabu-acdr-1.aliyuncs.com/1d/4e/20250319/b0fe3396/018c4baa-9f42-4946-8750-14a9fa74e1af885741332.png?Expires=1742442524&OSSAccessKeyId=LTAI5tKPD3TMqf2Lna1fASuh&Signature=n6b1zvp3YX4nXfV8LA5dR7pIdD0%3D"
+            },
+    "id": "ab967cd8-392f-90d9-a2b2-92bf1792cd7f"
+    }
+
+
