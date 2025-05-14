@@ -9,7 +9,7 @@ In this section, we will introduce the key concepts / terminologies of ``AOG``.
 AOG Service and AOG Service Providers
 =========================================
 
-In ``AOG``, typical general AI services such as ``chat`` and ``text-to-image``
+In ``AOG``, typical general AI services such as ``chat`` and ``text_to_image``
 etc. are defined as ``AOG Service``, each with standardized API. 
 
 Currently, ``AOG`` supports RESTful API based on HTTP protocol. So the API here
@@ -49,7 +49,7 @@ And one ``AOG Service Provider`` can also provide multiple ``AOG Services``.
 
         chat[label="chat"]
         rag_summarize[label="rag/summarize"]
-        text_to_image[label="text-to-image"]
+        text_to_image[label="text_to_image"]
     }
 
     subgraph cluster_aog_service_provider {
@@ -86,8 +86,8 @@ An ``AOG Service`` is defined by the following attributes:
 Name
     The name of the service. This serves as the string ID of the ``AOG
     Service``. Thus it should be unique among all services. Examples are
-    ``chat``, ``embed``, ``rag/query``, ``text-to-image``,
-    ``audio/text-to-speech`` etc.
+    ``chat``, ``embed``, ``rag/query``, ``text_to_image``,
+    ``audio/text_to_speech`` etc.
 
 Endpoints
     This tells the upper level application about how to invoke the service, i.e
@@ -95,7 +95,7 @@ Endpoints
     prefix will be added according according to real deployment. For example,
     the endpoint for ``chat`` service is ``POST /chat``. In real deployment, the
     full URL path will have the site, port, and aog prefix etc. added, resulting
-    in something like ``http://localhost:16688/aog/v0.2/service/chat``.
+    in something like ``http://localhost:16688/aog/v0.3/service/chat``.
     
     It is possible to have multiple endpoints for one service while most
     services only have one. An example of multiple endpoints is the ``embed``

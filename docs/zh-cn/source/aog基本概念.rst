@@ -9,7 +9,7 @@ AOG 关键概念
 AOG 服务和 AOG 服务提供商
 =========================================
 
-在 ``AOG`` 中, 典型的通用 AI 服务例如 ``chat`` 和 ``text-to-image``
+在 ``AOG`` 中, 典型的通用 AI 服务例如 ``chat`` 和 ``text_to_image``
 等被定义为 ``AOG Service``，每个服务都有其标准化的API. 
 
 目前， ``AOG`` 支持基于HTTP协议的RESTFUL API。 所以这里的API指的是接口（HTTP verb 和 URL），以及通过该接口进行对应服务的请求和响应的格式。
@@ -42,7 +42,7 @@ AOG 服务和 AOG 服务提供商
 
         chat[label="chat"]
         rag_summarize[label="rag/summarize"]
-        text_to_image[label="text-to-image"]
+        text_to_image[label="text_to_image"]
     }
 
     subgraph cluster_aog_service_provider {
@@ -76,8 +76,8 @@ AOG 服务详情
 
 Name
     服务的名称。 这是 ``AOG Service`` 的字符串类型的ID。因此，每个服务的名称都是唯一的。例如
-    ``chat``, ``embed``, ``rag/query``, ``text-to-image``,
-    ``audio/text-to-speech`` 等。
+    ``chat``, ``embed``, ``rag/query``, ``text_to_image``,
+    ``audio/text_to_speech`` 等。
 
 HybridPolicy
     服务的调度策略。在服务层面可以有多种调度策略，我们期望在单个服务拥有多个不同服务提供商时，

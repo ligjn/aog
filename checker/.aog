@@ -7,7 +7,7 @@
                 "qwen2.5:7b"
             ]
         },
-        "text-to-image": {
+        "text_to_image": {
             "models": [
                 "stable-diffusion-1.5-int4"
             ]

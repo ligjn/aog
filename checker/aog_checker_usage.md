@@ -4,9 +4,12 @@
 
 - Go
 - Python
-- C++
+- C/C++
 - C#
 - Node.js
+
+## 说明
+AOGInit("path/to/.aog") 方法可以选择输入一个参数，即.aog文件的路径；若不输入则默认为项目根目录。
 
 ## Go
 
@@ -53,99 +56,75 @@ print("AOGInit called successfully")
 python testChecker.py
 ```
 
-## C++
+## C/C++
 
-### 创建头文件 AogChecker.h
-
-```cpp
-#ifndef AOGCHECKER_H
-#define AOGCHECKER_H
-
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-void AOGInit();
-
-#ifdef __cplusplus
-}
-#endif
-
-#endif // AOGCHECKER_H
+### 创建静态库
+```sh
+cd go_lib
+go build -o aogchecker.a -buildmode=c-archive AogChecker.go
 ```
 
 ### 使用示例
 
-创建一个新的 C++ 文件，例如 `main.cpp`：
+创建一个新的 C/C++ 文件，例如 `main.cpp`：
 
-```cpp
-#include <iostream>
+```c
 #include "AogChecker.h"
 
-int main()
-{
-    // 调用 AOGInit 函数
-    AOGInit();
-    std::cout << "AOGInit called successfully" << std::endl;
+int main() { 
+    AOGInit(""); // 这里需要输入参数，参数可以为空
     return 0;
 }
+
 ```
 
-编译和运行 C++ 程序：
+编译和运行 C 程序：
 
 ```sh
-g++ -o AogCheckerApp main.cpp -L. -lAogChecker
-./AogCheckerApp
+gcc main.c aogchecker.a -o main
 ```
 
 ## C#
 
-### 创建包装类
-
-创建一个新的 C# 文件，例如 `AogChecker.cs`：
-
-```csharp
-using System;
-using System.Runtime.InteropServices;
-
-namespace AOGChecker
-{
-    public static class AogChecker
-    {
-        // 导入 AOGInit 函数
-        [DllImport("AogChecker.dll", CallingConvention = CallingConvention.Cdecl)]
-        public static extern void AOGInit();
-    }
-}
-```
-
-### 使用示例
-
-创建一个新的 C# 控制台应用程序，并在其中引用并调用 Go DLL 中的 `AOGInit` 函数。
-
+### 创建 C# 类库
 ```sh
-dotnet new console -n AogCheckerApp
-cd AogCheckerApp
+cd dotnet_lib
+dotnet build --configuration Release
 ```
 
-编辑 `Program.cs` 文件：
+### 将 dotnetCheckerLib.dll 复制到他们的项目目录
+在 /bin/Release/ 文件夹中找到 aog-cheker.dll 并将其复制到项目目录中。
+
+### 在项目中添加引用
+
+在 .csproj 文件中手动添加：
+
+```xml
+<ItemGroup>
+    <Reference Include="aog-checker">
+        <HintPath>path/to/aog-checker.dll</HintPath>
+    </Reference>
+</ItemGroup>
+```
+
+或者使用 Visual Studio 手动添加：
+
+右键 项目 > 添加引用 > 浏览 > 选择 aog-checker.dll
+
+### 在代码中使用
 
 ```csharp
-using System;
-using AOGChecker;
+using aog-checker;
 
 class Program
 {
-    static void Main(string[] args)
+    static void Main()
     {
-        // 调用 AOGInit 函数
-        AogChecker.AOGInit();
-        Console.WriteLine("AOGInit called successfully");
+        var checker = new AogChecker();
+        checker.AOGInit();
     }
 }
 ```
-
-将生成的 `AogChecker.dll` 文件复制到 C# 项目的输出目录（例如 `bin/Debug/net6.0`）。
 
 运行 C# 程序：
 
@@ -155,12 +134,10 @@ dotnet run
 
 ## Node.js
 
-### 安装 `ffi-napi` 和 `ref-napi`
-
-此方法要求Node.js版本不高于16。
+### 安装checker
 
 ```sh
-npm install ffi-napi ref-napi
+npm install path/to/aog-checker-1.0.1.tgz
 ```
 
 ### 使用示例
@@ -168,115 +145,9 @@ npm install ffi-napi ref-napi
 创建一个新的 JavaScript 文件，例如 `index.js`：
 
 ```javascript
-const ffi = require('ffi-napi');
-const ref = require('ref-napi');
+const checker = require('aog-checker');
 
-// 定义返回类型和参数类型
-const voidType = ref.types.void;
-
-// 加载 DLL 文件
-const AogChecker = ffi.Library('./AogChecker.dll', {
-    'AOGInit': [voidType, []]
-});
-
-// 调用 AOGInit 函数
-AogChecker.AOGInit();
-console.log("AOGInit called successfully");
+checker.AOGInit();
+console.log('AOGInit called successfully');
 ```
-
-运行 Node.js 脚本：
-
-```sh
-node index.js
-```
-
-### 安装 node-addon-api
-
-```sh
-npm install node-addon-api 
-```
-
-按照步骤创建完后，最终的文件结构应该是这样的：
-
-```sh
-/your_project_root/
-│── /src/                         # 你的 Node.js 项目源码目录
-│   ├── test.js                    # 你的调用 `initAOG()` 的Node.js 代码
-│── /native/                       # 存放 Go 和 C++ 代码的目录
-│   ├── AogChecker.go              # Go 代码
-│   ├── AogChecker.dll             # Go 编译出的 DLL（Windows 动态库）
-│   ├── addon.cpp                  # C++ 代码（Node.js 调用 DLL）
-│   ├── binding.gyp                 # Node.js 的 `node-gyp` 配置文件
-│   ├── build/                     # 编译 C++ 插件后生成的文件
-│       ├── Release/
-│           ├── addon.node         # Node.js 可调用的 C++ 插件
-│── package.json                   # Node.js 依赖文件
-│── node_modules/                   # npm 安装的依赖
-```
-
-编辑 `addon.cpp` 文件：
-
-```cpp
-#include <napi.h>
-#include <windows.h>
-
-typedef void (*AOGInitFunc)();
-
-HINSTANCE hDLL;
-AOGInitFunc AOGInit;
-
-Napi::Value InitAOG(const Napi::CallbackInfo& info) {
-    if (AOGInit) {
-        AOGInit(); 
-    }
-    return info.Env().Undefined();
-}
-
-Napi::Object Init(Napi::Env env, Napi::Object exports) {
-    hDLL = LoadLibrary("path/to/AogChecker.dll");           // 确保替换为 AogChecker.dll 的路径
-    if (!hDLL) throw Napi::Error::New(env, "无法加载 AogChecker.dll");
-
-    AOGInit = (AOGInitFunc)GetProcAddress(hDLL, "AOGInit");
-    if (!AOGInit) throw Napi::Error::New(env, "无法找到函数 AOGInit");
-
-    exports.Set(Napi::String::New(env, "initAOG"), Napi::Function::New(env, InitAOG));
-    return exports;
-}
-
-NODE_API_MODULE(addon, Init)
-```
-
-编写binding.gyp文件：
-
-```json
-{
-  "targets": [
-    {
-      "target_name": "addon",
-      "sources": ["addon.cpp"],
-      "include_dirs": [
-        "<!(node -p \"require('node-addon-api').include\")",
-        "path/to/node_modules/node-addon-api"       // 确保替换为 node-addon-api 的路径
-      ],
-      "dependencies": [
-        "<!(node -p \"require('node-addon-api').gyp\")"
-      ],
-      "defines": ["NODE_ADDON_API_CPP_EXCEPTIONS", "NODE_ADDON_API_DISABLE_CPP_EXCEPTIONS"]
-    }
-  ]
-}
-```
-
-切换到 `/native/` 目录下运行以下命令：
-
-```sh
-cd native
-node-gyp configure
-node-gyp build
-```
-
-之后执行你的 Node.js 代码：
-
-```sh
-node src/test.js
-```
+​

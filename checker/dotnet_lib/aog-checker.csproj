@@ -1,0 +1,18 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>net8.0;net9.0</TargetFrameworks>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageId>AogCheckerLib</PackageId>
+    <Version>1.1.0</Version>
+    <Authors>YourName</Authors>
+    <Company>YourCompany</Company>
+    <Description>A library for checking AOG components.</Description>
+    <PackageTags>AOG Checker</PackageTags>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.App" Version="2.2.8" />
+  </ItemGroup>
+
+</Project>

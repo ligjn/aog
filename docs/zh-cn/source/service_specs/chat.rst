@@ -106,7 +106,7 @@ ______________
 
 .. code-block:: shell
 
-    curl https://localhost:16688/aog/v0.2/services/chat\
+    curl https://localhost:16688/aog/v0.3/services/chat\
     -H "Content-Type: application/json" \
     -d '{
         "model": "deepseek-r1:7b",
@@ -292,7 +292,7 @@ ______________
    * - model
      - string
      - 可选
-     - text-to-image模型
+     - text_to_image模型
 
 
 Response Schema
@@ -315,7 +315,7 @@ Response Schema
    * - data
      - array of object
      - 必填
-     - text-to-image结果
+     - text_to_image结果
 
 示例
 ----------------
