@@ -1,11 +1,11 @@
 ===================================
-AOG Text-to-image 服务相关
+AOG Image相关服务
 ===================================
 
 Text-to-image 服务
 =====================
 
-.. _`custom_properties_chat`:
+.. _`custom_properties_text_to_image`:
 
 Custom Properties of its Service Providers
 --------------------------------------------
@@ -118,6 +118,7 @@ ______________
     }
 
 返回响应二
+
 .. code-block:: json
 
     {

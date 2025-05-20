@@ -31,4 +31,5 @@ AOG (AIPC Open Gateway)
 
    aog规范
    service_specs/chat
+   service_specs/image
 
