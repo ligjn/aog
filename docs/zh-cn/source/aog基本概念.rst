@@ -42,7 +42,7 @@ AOG 服务和 AOG 服务提供商
 
         chat[label="chat"]
         rag_summarize[label="rag/summarize"]
-        text-to-image[label="text-to-image"]
+        text_to_image[label="text-to-image"]
     }
 
     subgraph cluster_aog_service_provider {
@@ -61,7 +61,7 @@ AOG 服务和 AOG 服务提供商
     edge[arrowhead=onormal]
     {provider_a, provider_b} -> chat
     {provider_a, provider_b} -> rag_summarize
-    provider_c -> text-to-image
+    provider_c -> text_to_image
 
    }
 
