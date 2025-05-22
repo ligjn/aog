@@ -1,0 +1,76 @@
+{
+  "version": "v0.3",
+  "services": {
+    "chat": {
+      "service_providers": {
+        "local": "local_ollama_chat"
+      },
+      "hybrid_policy": "always_local"
+    },
+    "embed": {
+      "service_providers": {
+        "local": "local_ollama_embed"
+      },
+      "hybrid_policy": "always_local"
+    },
+    "text-to-image": {
+      "service_providers": {
+        "remote": "remote_aliyun_text_to_image"
+      },
+      "hybrid_policy": "always_remote"
+    }
+  },
+  "service_providers": {
+    "local_ollama_chat": {
+      "service_name": "chat",
+      "service_source": "local",
+      "desc": "Local ollama chat/completion",
+      "api_flavor": "ollama",
+      "method": "POST",
+      "auth_type": "none",
+      "auth_key": "",
+      "models": [
+      ]
+    },
+    "local_ollama_embed": {
+      "desc": "Local ollama embed",
+      "service_name": "embed",
+      "service_source": "local",
+      "api_flavor": "ollama",
+      "method": "POST",
+      "auth_type": "none",
+      "auth_key": "",
+      "models": []
+    },
+    "remote_aliyun_text_to_image": {
+      "desc": "Remote aliyun tti",
+      "service_name": "text-to-image",
+      "service_source": "remote",
+      "api_flavor": "aliyun",
+      "method": "POST",
+      "auth_type": "none",
+      "auth_key": "",
+      "models": []
+    },
+    "remote_baidu_text_to_image": {
+      "desc": "Remote baidu tti",
+      "service_name": "text-to-image",
+      "service_source": "remote",
+      "api_flavor": "baidu",
+      "method": "POST",
+      "auth_type": "none",
+      "auth_key": "",
+      "models": []
+    },
+    "remote_tencent_text_to_image": {
+      "desc": "Remote tencent tti",
+      "service_name": "text-to-image",
+      "service_source": "remote",
+      "api_flavor": "tencent",
+      "method": "POST",
+      "auth_type": "none",
+      "auth_key": "",
+      "models": []
+    }
+  }
+}

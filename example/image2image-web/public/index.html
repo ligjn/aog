@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AOG图生图</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- 上半部分 -->
+        <div class="top-section">
+            <!-- 左上部分 -->
+            <div class="input-area">
+                <p class="step-hint">第一步：生成垫图</p>
+                <input type="text" id="prompt" placeholder="请输入描述文字">
+                <div class="radio-group">
+                    <label>
+                        <input type="radio" name="generate-location" value="local" id="generate-location-local" checked>
+                        <span>本地</span>
+                    </label>
+                    <label>
+                        <input type="radio" name="generate-location" value="cloud" id="generate-location-cloud">
+                        <span>云端</span>
+                    </label>
+                </div>
+                <button id="generate-button">AOG文生图</button>
+            </div>
+            <!-- 右上部分 -->
+            <div class="image-display"></div>
+        </div>
+
+        <!-- 中间提示 -->
+        <div class="center-hint">
+            <p>第二步：选择图片</p>
+            <p class="description">从生成的四张图片中选择一张作为垫图，进一步增强</p>
+        </div>
+
+        <!-- 下半部分 -->
+        <div class="bottom-section">
+            <!-- 左下部分 -->
+            <div class="input-area">
+                <p class="step-hint">第三步：增强图片</p>
+                <input type="text" id="upscale-description" placeholder="选中图片后输入描述文字">
+                <div class="radio-group">
+                    <label>
+                        <input type="radio" name="location" value="local" id="upscale-location-local" checked>
+                        <span>本地</span>
+                    </label>
+                    <label>
+                        <input type="radio" name="location" value="cloud" id="upscale-location-cloud">
+                        <span>云端</span>
+                    </label>
+                </div>
+                <button id="upscale-button" disabled>AOG图生图</button>
+                <div class="thumbnail-container">
+                    <p class="thumbnail-label"></p>
+                    <div class="thumbnail-display">
+                        <img id="thumbnail" src="" alt="缩略图" class="thumbnail">
+                    </div>
+                </div>
+            </div>
+            <!-- 右下部分 -->
+            <div class="upscaled-image-display"></div>
+        </div>
+    </div>
+    <script src="renderer.js"></script>
+</body>
+</html>

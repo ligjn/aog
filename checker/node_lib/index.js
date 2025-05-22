@@ -6,6 +6,8 @@ const os = require('os');
 const axios = require('axios');
 const { promises: fsPromises } = require("fs");
 const { spawn } = require('child_process');
+const { execSync } = require('child_process');
+const AdmZip = require('adm-zip');
 
 const webServerPort = 5000;
 let userResponseResolve;
@@ -65,44 +67,49 @@ function AddToUserPath(destDir) {
 
   if (isMacOS) {
     try {
-      // 确定shell配置文件
-      const shell = process.env.SHELL || '';
-      let shellConfigName = '.zshrc';
-      if (shell.includes('bash')) shellConfigName = '.bash_profile';
-      
-      const shellConfigPath = path.join(os.homedir(), shellConfigName);
-      const exportLine = `export PATH="$PATH:${destDir}"\n`;
+      // 优先检查 .zprofile 文件
+      const zprofilePath = path.join(os.homedir(), '.zprofile');
+      const bashProfilePath = path.join(os.homedir(), '.bash_profile');
+      let shellConfigPath = '';
 
-      // 确保配置文件存在
-      if (!fs.existsSync(shellConfigPath)) {
+      if (fs.existsSync(zprofilePath)) {
+        shellConfigPath = zprofilePath;
+      } else if (fs.existsSync(bashProfilePath)) {
+        shellConfigPath = bashProfilePath;
+      } else {
+        // 如果两个文件都不存在，默认创建 .zprofile
+        shellConfigPath = zprofilePath;
         fs.writeFileSync(shellConfigPath, '');
       }
 
+      const exportLine = `export PATH="$PATH:${destDir}"`;
+
       // 检查是否已存在路径
       const content = fs.readFileSync(shellConfigPath, 'utf8');
-      if (content.includes(exportLine)) {
-        console.log('✅ 环境变量已存在');
+      const pathRegex = new RegExp(`(^|\\n)export PATH=.*${destDir}.*`, 'm');
+      if (pathRegex.test(content)) {
+        console.log('✅ 环境变量已存在:', destDir);
         return true;
       }
 
       // 追加路径到配置文件
-      fs.appendFileSync(shellConfigPath, `\n${exportLine}`);
-      console.log(`✅ 已添加到 ${shellConfigName}，请执行以下命令生效：\nsource ${shellConfigPath}`);
+      fs.appendFileSync(shellConfigPath, `\n${exportLine}\n`);
+      console.log(`✅ 已添加到 ${path.basename(shellConfigPath)}，请执行以下命令生效：\nsource ${shellConfigPath}`);
       return true;
     } catch (err) {
       console.error('❌ 添加环境变量失败:', err.message);
       return false;
     }
   } else {
-    // Windows环境变量处理
+    // Windows 环境变量处理
     try {
       const regKey = 'HKCU\\Environment';
       let currentPath = '';
 
       try {
-        const output = execSync(`REG QUERY "${regKey}" /v Path`, { 
+        const output = execSync(`REG QUERY "${regKey}" /v Path`, {
           encoding: 'utf-8',
-          stdio: ['pipe', 'pipe', 'ignore'] 
+          stdio: ['pipe', 'pipe', 'ignore']
         });
         const match = output.match(/Path\s+REG_(SZ|EXPAND_SZ)\s+(.*)/);
         currentPath = match ? match[2].trim() : '';
@@ -115,12 +122,12 @@ function AddToUserPath(destDir) {
         return true;
       }
 
-      // 更新Path值
+      // 更新 Path 值
       const newPath = currentPath ? `${currentPath};${destDir}` : destDir;
-      execSync(`REG ADD "${regKey}" /v Path /t REG_EXPAND_SZ /d "${newPath}" /f`, { 
-        stdio: 'inherit' 
+      execSync(`REG ADD "${regKey}" /v Path /t REG_EXPAND_SZ /d "${newPath}" /f`, {
+        stdio: 'inherit'
       });
-      
+
       console.log('✅ 已添加到环境变量，请重新启动应用程序使更改生效');
       return true;
     } catch (error) {
@@ -155,11 +162,13 @@ function isAOGAvailable() {
 // 获取模型提供商
 async function getServiceProvider() {
   try {
-    const response = await axios.get('http://127.0.0.1:16688/aog/v0.2/service_provider');
-    const providers = response.data
-    if (providers) {
+    const response = await axios.get('http://127.0.0.1:16688/aog/v0.3/service_provider');
+    const providers = response.data.data;
+    if (Array.isArray(providers) && providers.length === 0) {
+      return false;
+    } else {
       return true;
-    } else return false;
+    }
   } catch (error) {
     throw new Error('❌ 获取模型提供商失败:', error.message);
   }
@@ -267,42 +276,22 @@ function installAOG() {
       resolve(false);
     });
 
-    // 智能服务检测（带重试机制）
-    const checkServer = (attempt = 1) => {
-      const req = http.request({
-        hostname: 'localhost',
-        port: 16688,
-        method: 'GET',
-        timeout: 5000
-      }, (res) => {
-        if (res.statusCode === 200) {
-          console.log('✅ 服务已就绪');
-          resolve(true);
-        } else {
-          console.log(`⚠️ 服务响应异常: HTTP ${res.statusCode}`);
-          if (attempt < 3) setTimeout(() => checkServer(attempt + 1), 2000);
-          else resolve(false);
-        }
-      });
+    child.stdout.on('data', (data) => {
+      console.log(`stdout: ${data}`);
+      if (data.toString().includes('Byze server start successfully')) {
+        resolve(true);
+      }
+    });
 
-      req.on('error', () => {
-        console.log(`⌛ 检测尝试 ${attempt}/3`);
-        if (attempt < 3) setTimeout(() => checkServer(attempt + 1), 2000);
-        else resolve(false);
-      });
+    child.stderr.on('data', (data) => {
+      const errorMessage = data.toString().trim();
+      if (errorMessage.includes('Install model engine failed')) {
+        console.error('❌ 启动失败: 模型引擎安装失败。');
+        resolve(false);
+      }
+      console.error(`stderr: ${errorMessage}`);
+    });
 
-      req.on('timeout', () => {
-        console.log(`⏳ 检测超时 ${attempt}/3`);
-        req.destroy();
-        if (attempt < 3) setTimeout(() => checkServer(attempt + 1), 2000);
-        else resolve(false);
-      });
-
-      req.end();
-    };
-
-    // 动态调整首次检测时间
-    setTimeout(() => checkServer(1), 5000);
     child.unref();
   });
 }
@@ -312,13 +301,16 @@ async function importConfig(filePath) {
   try {
     // 读取文件内容
     const data = await fsPromises.readFile(filePath, 'utf8');
+    console.log('🔍 正在导入配置文件:', data);
 
     // 发送 POST 请求
-    const res = await axios.post('http://127.0.0.1/aog/v0.2/service/import', data, {
+    const res = await axios.post('http://127.0.0.1:16688/aog/v0.3/service/import', data, {
       headers: {
         'Content-Type': 'application/json',
       },
+      validateStatus: () => true
     });
+    console.log(res);
 
     // 验证响应
     if (res.status === 200) {

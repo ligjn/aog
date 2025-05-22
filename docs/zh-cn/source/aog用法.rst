@@ -87,6 +87,8 @@ AOG 提供以下基本功能：
 
 如果您的开发环境是 Windows，您可能需要安装 `MSYS2 <https://www.msys2.org/>`_ ，以获得 Make 等命令。
 
+由于 AOG 需要开启 CGO 依赖，所以您可能需要安装[MinGW-W64](https://github.com/niXman/mingw-builds-binaries/releases)，以便开启CGO支持。
+
 接着，将此项目下载或克隆到如 ``/path_to_aog`` 的目录中。
 
 然后运行以下命令：
@@ -95,7 +97,11 @@ AOG 提供以下基本功能：
 
     cd /path_to_aog
 
-    make build-all
+    # 根据情况设置 GOPROXY
+    go env -w GOPROXY=https://goproxy.cn,direct
+
+    # win
+    set CGO_ENABLED=1 && go build -o aog.exe -ldflags="-s -w"  cmd/cli/main.go
 
 
 
