@@ -6,84 +6,84 @@ package aogchecker
 import "C"
 
 import (
-    "fmt"
-    "io"
-    "log"
-    "net"
-    "net/http"
-    "os"
-    "os/exec"
-    "path/filepath"
-    "runtime"
-    "sync"
-    "time"
-    "strings"
-    "bytes"
-    "bufio"
+	"bufio"
+	"bytes"
+	"fmt"
+	"io"
+	"log"
+	"net"
+	"net/http"
+	"os"
+	"os/exec"
+	"path/filepath"
+	"runtime"
+	"strings"
+	"sync"
+	"time"
 )
 
 var (
-    userResponse   chan bool
-    webServerMutex sync.Mutex
-    webServerPort  = 5000
+	userResponse   chan bool
+	webServerMutex sync.Mutex
+	webServerPort  = 5000
 )
 
 //export AOGInit
 func AOGInit(aogFilePath *C.char) {
-    var configPath string
-    if aogFilePath != nil {
-        configPath = C.GoString(aogFilePath)
-    } else {
-        configPath = filepath.Join(getProjectRootDirectory(), ".aog")
-    }
+	var configPath string
+	if aogFilePath != nil {
+		configPath = C.GoString(aogFilePath)
+	} else {
+		configPath = filepath.Join(getProjectRootDirectory(), ".aog")
+	}
 
-    // 检查 AOG 是否可用
-    if !isAOGAvailable() {
-        fmt.Println("AOG 不可用，启动 Web 服务器等待用户确认...")
-        userResponse = make(chan bool)
-        startWebServer()
+	// 检查 AOG 是否可用
+	if !isAOGAvailable() {
+		fmt.Println("AOG 不可用，启动 Web 服务器等待用户确认...")
+		userResponse = make(chan bool)
+		startWebServer()
 
-        if !openBrowser(fmt.Sprintf("http://localhost:%d/install-prompt", webServerPort)) {
-            fmt.Println("无法打开浏览器。")
-            return
-        }
+		if !openBrowser(fmt.Sprintf("http://localhost:%d/install-prompt", webServerPort)) {
+			fmt.Println("无法打开浏览器。")
+			return
+		}
 
-        select {
-        case choice := <-userResponse:
-            if !choice {
-                fmt.Println("用户取消了安装 AOG。")
-                return
-            }
+		select {
+		case choice := <-userResponse:
+			if !choice {
+				fmt.Println("用户取消了安装 AOG。")
+				return
+			}
 
-            // 下载并安装 AOG
-            if !downloadAOG() {
-                fmt.Println("下载 AOG 失败。")
-                return
-            }
+			// 下载并安装 AOG
+			if !downloadAOG() {
+				fmt.Println("下载 AOG 失败。")
+				return
+			}
 
-            if !installAOG() {
-                fmt.Println("安装 AOG 失败。")
-                return
-            }
-        case <-time.After(5 * time.Minute):
-            fmt.Println("等待超时，未安装 AOG。")
-            return
-        }
-    }
+			if !installAOG() {
+				fmt.Println("安装 AOG 失败。")
+				return
+			}
+		case <-time.After(5 * time.Minute):
+			fmt.Println("等待超时，未安装 AOG。")
+			return
+		}
+	}
 
-    fmt.Println("✅ AOG 已启动，检查服务提供商...")
+	fmt.Println("✅ AOG 已启动，检查服务提供商...")
 
-    // 检查服务提供商
-    if !getServiceProvider() {
-        fmt.Println("服务提供商不存在，尝试导入配置文件...")
-        if importAOG(configPath) {
-            fmt.Printf("✅ 成功导入配置文件: %s\n", configPath)
-        } else {
-            fmt.Printf("❌ 导入配置文件失败: %s\n", configPath)
-        }
-    } else {
-        fmt.Println("✅ 服务提供商已存在，无需导入配置文件。")
-    }
+	// 检查服务提供商
+	if !getServiceProvider() {
+		fmt.Println("服务提供商不存在，尝试导入配置文件...")
+		if importAOG(configPath) {
+			fmt.Printf("✅ 成功导入配置文件: %s\n", configPath)
+		} else {
+			fmt.Printf("❌ 导入配置文件失败: %s\n", configPath)
+		}
+	} else {
+		fmt.Println("✅ 服务提供商已存在，无需导入配置文件。")
+	}
 }
 
 func main() {} // 必须保留空的 main 函数
@@ -91,247 +91,247 @@ func main() {} // 必须保留空的 main 函数
 // ========== 核心逻辑实现 ==========
 
 func isAOGAvailable() bool {
-    client := http.Client{Timeout: 3 * time.Second}
-    resp, err := client.Get("http://localhost:16688")
-    return err == nil && resp.StatusCode == http.StatusOK
+	client := http.Client{Timeout: 3 * time.Second}
+	resp, err := client.Get("http://localhost:16688")
+	return err == nil && resp.StatusCode == http.StatusOK
 }
 
 func getServiceProvider() bool {
-    client := http.Client{Timeout: 3 * time.Second}
-    resp, err := client.Get("http://127.0.0.1:16688/aog/v0.2/service_provider")
-    if err != nil {
-        return false
-    }
-    defer resp.Body.Close()
+	client := http.Client{Timeout: 3 * time.Second}
+	resp, err := client.Get("http://127.0.0.1:16688/aog/v0.3/service_provider")
+	if err != nil {
+		return false
+	}
+	defer resp.Body.Close()
 
-    body, err := io.ReadAll(resp.Body)
-    return err == nil && len(body) > 0
+	body, err := io.ReadAll(resp.Body)
+	return err == nil && len(body) > 0
 }
 
 func downloadAOG() bool {
-    url := "http://120.232.136.73:31619/aogdev/aog.exe"
-    userDir, _ := os.UserHomeDir()
-    dest := filepath.Join(userDir, "AOG", "aog.exe")
+	url := "http://120.232.136.73:31619/aogdev/aog.exe"
+	userDir, _ := os.UserHomeDir()
+	dest := filepath.Join(userDir, "AOG", "aog.exe")
 
-    if err := os.MkdirAll(filepath.Dir(dest), 0o755); err != nil {
-        return false
-    }
+	if err := os.MkdirAll(filepath.Dir(dest), 0o755); err != nil {
+		return false
+	}
 
-    resp, err := http.Get(url)
-    if err != nil {
-        return false
-    }
-    defer resp.Body.Close()
+	resp, err := http.Get(url)
+	if err != nil {
+		return false
+	}
+	defer resp.Body.Close()
 
-    out, err := os.Create(dest)
-    if err != nil {
-        return false
-    }
-    defer out.Close()
+	out, err := os.Create(dest)
+	if err != nil {
+		return false
+	}
+	defer out.Close()
 
-    _, err = io.Copy(out, resp.Body)
+	_, err = io.Copy(out, resp.Body)
 
-    sucess := addToUserPathUnix(filepath.Join(userDir, "AOG"))
-    if !sucess {
-        fmt.Println("❌ 添加到环境变量失败")
-    }
-    return err == nil
+	sucess := addToUserPathUnix(filepath.Join(userDir, "AOG"))
+	if !sucess {
+		fmt.Println("❌ 添加到环境变量失败")
+	}
+	return err == nil
 }
 
 func installAOG() bool {
-    userDir, _ := os.UserHomeDir()
-    aogPath := filepath.Join(userDir, "AOG", "aog.exe")
+	userDir, _ := os.UserHomeDir()
+	aogPath := filepath.Join(userDir, "AOG", "aog.exe")
 
-    cmd := exec.Command(aogPath, "server", "start", "-d")
-    return cmd.Start() == nil
+	cmd := exec.Command(aogPath, "server", "start", "-d")
+	return cmd.Start() == nil
 }
 
 func importAOG(configPath string) bool {
-    userDir, _ := os.UserHomeDir()
-    aogPath := filepath.Join(userDir, "AOG", "aog.exe")
+	userDir, _ := os.UserHomeDir()
+	aogPath := filepath.Join(userDir, "AOG", "aog.exe")
 
-    if !fileExists(configPath) {
-        log.Fatalf("配置文件未找到: %s", configPath)
-    }
+	if !fileExists(configPath) {
+		log.Fatalf("配置文件未找到: %s", configPath)
+	}
 
-    cmd := exec.Command(aogPath, "import", "--file", configPath)
-    return cmd.Run() == nil
+	cmd := exec.Command(aogPath, "import", "--file", configPath)
+	return cmd.Run() == nil
 }
 
 // ========== 系统交互部分 ==========
 
 func startWebServer() {
-    webServerMutex.Lock()
-    defer webServerMutex.Unlock()
+	webServerMutex.Lock()
+	defer webServerMutex.Unlock()
 
-    mux := http.NewServeMux()
-    mux.HandleFunc("/install-prompt", handleInstallPrompt)
-    mux.HandleFunc("/user-response", handleUserResponse)
+	mux := http.NewServeMux()
+	mux.HandleFunc("/install-prompt", handleInstallPrompt)
+	mux.HandleFunc("/user-response", handleUserResponse)
 
-    listener, err := net.Listen("tcp", fmt.Sprintf(":%d", webServerPort))
-    if err != nil {
-        log.Fatal(err)
-    }
+	listener, err := net.Listen("tcp", fmt.Sprintf(":%d", webServerPort))
+	if err != nil {
+		log.Fatal(err)
+	}
 
-    go func() {
-        log.Fatal(http.Serve(listener, mux))
-    }()
+	go func() {
+		log.Fatal(http.Serve(listener, mux))
+	}()
 }
 
 func handleInstallPrompt(w http.ResponseWriter, r *http.Request) {
-    w.Header().Set("Content-Type", "text/html; charset=utf-8")
-    fmt.Fprint(w, installPromptHTML)
+	w.Header().Set("Content-Type", "text/html; charset=utf-8")
+	fmt.Fprint(w, installPromptHTML)
 }
 
 func handleUserResponse(w http.ResponseWriter, r *http.Request) {
-    choice := r.URL.Query().Get("choice") == "true"
-    userResponse <- choice
-    w.WriteHeader(http.StatusOK)
+	choice := r.URL.Query().Get("choice") == "true"
+	userResponse <- choice
+	w.WriteHeader(http.StatusOK)
 }
 
 func openBrowser(url string) bool {
-    var cmd string
-    var args []string
+	var cmd string
+	var args []string
 
-    switch runtime.GOOS {
-    case "windows":
-        cmd = "cmd"
-        args = []string{"/c", "start", url}
-    case "darwin":
-        cmd = "open"
-        args = []string{url}
-    default:
-        cmd = "xdg-open"
-        args = []string{url}
-    }
+	switch runtime.GOOS {
+	case "windows":
+		cmd = "cmd"
+		args = []string{"/c", "start", url}
+	case "darwin":
+		cmd = "open"
+		args = []string{url}
+	default:
+		cmd = "xdg-open"
+		args = []string{url}
+	}
 
-    return exec.Command(cmd, args...).Start() == nil
+	return exec.Command(cmd, args...).Start() == nil
 }
 
 // ========== 工具方法 ==========
 
 func getProjectRootDirectory() string {
-    return filepath.Dir(os.Args[0])
+	return filepath.Dir(os.Args[0])
 }
 
 func fileExists(filename string) bool {
-    info, err := os.Stat(filename)
-    return err == nil && !info.IsDir()
+	info, err := os.Stat(filename)
+	return err == nil && !info.IsDir()
 }
 
 func AddToUserPath(destDir string) bool {
-    if runtime.GOOS == "windows" {
-        return addToUserPathWindows(destDir)
-    } else if runtime.GOOS == "darwin" || runtime.GOOS == "linux" {
-        return addToUserPathUnix(destDir)
-    } else {
-        fmt.Println("❌ 不支持的操作系统")
-        return false
-    }
+	if runtime.GOOS == "windows" {
+		return addToUserPathWindows(destDir)
+	} else if runtime.GOOS == "darwin" || runtime.GOOS == "linux" {
+		return addToUserPathUnix(destDir)
+	} else {
+		fmt.Println("❌ 不支持的操作系统")
+		return false
+	}
 }
 
 func addToUserPathWindows(destDir string) bool {
-    cmd := exec.Command("reg", "query", `HKCU\Environment`, "/v", "Path")
-    var out bytes.Buffer
-    cmd.Stdout = &out
-    err := cmd.Run()
-    if err != nil {
-        fmt.Println("❌ 无法查询注册表:", err)
-        return false
-    }
+	cmd := exec.Command("reg", "query", `HKCU\Environment`, "/v", "Path")
+	var out bytes.Buffer
+	cmd.Stdout = &out
+	err := cmd.Run()
+	if err != nil {
+		fmt.Println("❌ 无法查询注册表:", err)
+		return false
+	}
 
-    currentPath := ""
-    scanner := bufio.NewScanner(&out)
-    for scanner.Scan() {
-        line := scanner.Text()
-        if strings.Contains(line, "Path") {
-            parts := strings.Split(line, "    ")
-            if len(parts) > 1 {
-                currentPath = strings.TrimSpace(parts[len(parts)-1])
-            }
-            break
-        }
-    }
+	currentPath := ""
+	scanner := bufio.NewScanner(&out)
+	for scanner.Scan() {
+		line := scanner.Text()
+		if strings.Contains(line, "Path") {
+			parts := strings.Split(line, "    ")
+			if len(parts) > 1 {
+				currentPath = strings.TrimSpace(parts[len(parts)-1])
+			}
+			break
+		}
+	}
 
-    // 检查路径是否已存在
-    paths := strings.Split(currentPath, ";")
-    for _, p := range paths {
-        if strings.EqualFold(p, destDir) {
-            fmt.Println("✅ 环境变量已存在")
-            return true
-        }
-    }
+	// 检查路径是否已存在
+	paths := strings.Split(currentPath, ";")
+	for _, p := range paths {
+		if strings.EqualFold(p, destDir) {
+			fmt.Println("✅ 环境变量已存在")
+			return true
+		}
+	}
 
-    // 更新 PATH 值
-    newPath := currentPath
-    if currentPath != "" {
-        newPath += ";"
-    }
-    newPath += destDir
+	// 更新 PATH 值
+	newPath := currentPath
+	if currentPath != "" {
+		newPath += ";"
+	}
+	newPath += destDir
 
-    cmd = exec.Command("reg", "add", `HKCU\Environment`, "/v", "Path", "/t", "REG_EXPAND_SZ", "/d", newPath, "/f")
-    err = cmd.Run()
-    if err != nil {
-        fmt.Println("❌ 添加环境变量失败:", err)
-        return false
-    }
+	cmd = exec.Command("reg", "add", `HKCU\Environment`, "/v", "Path", "/t", "REG_EXPAND_SZ", "/d", newPath, "/f")
+	err = cmd.Run()
+	if err != nil {
+		fmt.Println("❌ 添加环境变量失败:", err)
+		return false
+	}
 
-    fmt.Println("✅ 已添加到环境变量，请重新启动应用程序使更改生效")
-    return true
+	fmt.Println("✅ 已添加到环境变量，请重新启动应用程序使更改生效")
+	return true
 }
 
 func addToUserPathUnix(destDir string) bool {
-    homeDir, err := os.UserHomeDir()
-    if err != nil {
-        fmt.Println("❌ 无法获取用户主目录:", err)
-        return false
-    }
+	homeDir, err := os.UserHomeDir()
+	if err != nil {
+		fmt.Println("❌ 无法获取用户主目录:", err)
+		return false
+	}
 
-    shell := os.Getenv("SHELL")
-    shellConfigName := ".bash_profile"
-    if strings.Contains(shell, "zsh") {
-        shellConfigName = ".zshrc"
-    }
-    shellConfigPath := filepath.Join(homeDir, shellConfigName)
-    exportLine := fmt.Sprintf(`export PATH="$PATH:%s"`, destDir)
+	shell := os.Getenv("SHELL")
+	shellConfigName := ".bash_profile"
+	if strings.Contains(shell, "zsh") {
+		shellConfigName = ".zshrc"
+	}
+	shellConfigPath := filepath.Join(homeDir, shellConfigName)
+	exportLine := fmt.Sprintf(`export PATH="$PATH:%s"`, destDir)
 
-    // 确保配置文件存在
-    if _, err := os.Stat(shellConfigPath); os.IsNotExist(err) {
-        file, err := os.Create(shellConfigPath)
-        if err != nil {
-            fmt.Println("❌ 无法创建配置文件:", err)
-            return false
-        }
-        file.Close()
-    }
+	// 确保配置文件存在
+	if _, err := os.Stat(shellConfigPath); os.IsNotExist(err) {
+		file, err := os.Create(shellConfigPath)
+		if err != nil {
+			fmt.Println("❌ 无法创建配置文件:", err)
+			return false
+		}
+		file.Close()
+	}
 
-    // 检查是否已存在路径
-    content, err := os.ReadFile(shellConfigPath)
-    if err != nil {
-        fmt.Println("❌ 无法读取配置文件:", err)
-        return false
-    }
-    if strings.Contains(string(content), exportLine) {
-        fmt.Println("✅ 环境变量已存在")
-        return true
-    }
+	// 检查是否已存在路径
+	content, err := os.ReadFile(shellConfigPath)
+	if err != nil {
+		fmt.Println("❌ 无法读取配置文件:", err)
+		return false
+	}
+	if strings.Contains(string(content), exportLine) {
+		fmt.Println("✅ 环境变量已存在")
+		return true
+	}
 
-    // 追加路径到配置文件
-    file, err := os.OpenFile(shellConfigPath, os.O_APPEND|os.O_WRONLY, 0644)
-    if err != nil {
-        fmt.Println("❌ 无法打开配置文件:", err)
-        return false
-    }
-    defer file.Close()
+	// 追加路径到配置文件
+	file, err := os.OpenFile(shellConfigPath, os.O_APPEND|os.O_WRONLY, 0644)
+	if err != nil {
+		fmt.Println("❌ 无法打开配置文件:", err)
+		return false
+	}
+	defer file.Close()
 
-    _, err = file.WriteString("\n" + exportLine + "\n")
-    if err != nil {
-        fmt.Println("❌ 无法写入配置文件:", err)
-        return false
-    }
+	_, err = file.WriteString("\n" + exportLine + "\n")
+	if err != nil {
+		fmt.Println("❌ 无法写入配置文件:", err)
+		return false
+	}
 
-    fmt.Printf("✅ 已添加到 %s，请执行以下命令生效：\nsource %s\n", shellConfigName, shellConfigPath)
-    return true
+	fmt.Printf("✅ 已添加到 %s，请执行以下命令生效：\nsource %s\n", shellConfigName, shellConfigPath)
+	return true
 }
 
 // ========== HTML模板 ==========

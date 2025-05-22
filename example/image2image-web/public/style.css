@@ -93,8 +93,8 @@ body {
 
 /* 限制增强图片的大小 */
 .upscaled-image-display img {
-    max-width: 100%; /* 图片宽度不超过容器宽度 */
-    max-height: 100%; /* 图片高度不超过容器高度 */
+    max-width: 80%; /* 图片宽度不超过容器宽度 */
+    max-height: 80%; /* 图片高度不超过容器高度 */
     object-fit: contain; /* 保持图片比例 */
     border: 1px solid #ddd;
     border-radius: 4px;
@@ -127,8 +127,8 @@ body {
 }
 
 .thumbnail {
-    max-width: 100%;
-    max-height: 100%;
+    max-width: 80%;
+    max-height: 80%;
     object-fit: contain;
     border: 1px solid #ddd;
     border-radius: 4px;
