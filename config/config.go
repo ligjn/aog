@@ -14,8 +14,8 @@ import (
 
 	"github.com/MatusOllah/slogcolor"
 	"github.com/fatih/color"
-	"github.com/ligjn/aog/internal/client"
-	"github.com/ligjn/aog/internal/utils"
+	"github.com/ligjn/aog/pkg/client"
+	"github.com/ligjn/aog/pkg/utils"
 	"github.com/ligjn/aog/version"
 	"github.com/spf13/pflag"
 )

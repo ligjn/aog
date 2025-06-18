@@ -18,9 +18,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/ligjn/aog/internal/datastore"
-	"github.com/ligjn/aog/internal/types"
-	"github.com/ligjn/aog/internal/utils"
+	"github.com/ligjn/aog/pkg/datastore"
+	"github.com/ligjn/aog/pkg/types"
+	"github.com/ligjn/aog/pkg/utils"
 	"gorm.io/gorm"
 )
 
