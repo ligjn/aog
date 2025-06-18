@@ -5,8 +5,7 @@ import (
 	"fmt"
 
 	"github.com/gin-gonic/gin"
-
-	"intel.com/aog/internal/server"
+	"github.com/ligjn/aog/internal/server"
 )
 
 type AOGCoreServer struct {

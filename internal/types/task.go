@@ -8,7 +8,7 @@ import (
 	"io"
 	"net/http"
 
-	"intel.com/aog/internal/utils"
+	"github.com/ligjn/aog/internal/utils"
 )
 
 type ServiceResultType int

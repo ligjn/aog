@@ -3,7 +3,7 @@ package main
 import (
 	"os"
 
-	cli "intel.com/aog/cmd/cli/core"
+	cli "github.com/ligjn/aog/cmd/cli/core"
 )
 
 func main() {

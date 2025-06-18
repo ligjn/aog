@@ -4,9 +4,9 @@ import (
 	"context"
 	"time"
 
+	"github.com/ligjn/aog/internal/client/grpc/grpc_client"
+	"github.com/ligjn/aog/internal/types"
 	"google.golang.org/grpc"
-	"intel.com/aog/internal/client/grpc/grpc_client"
-	"intel.com/aog/internal/types"
 )
 
 type GRPCClient struct {

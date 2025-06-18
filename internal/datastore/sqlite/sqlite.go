@@ -9,11 +9,10 @@ import (
 	"strings"
 	"time"
 
+	"github.com/ligjn/aog/internal/datastore"
+	"github.com/ligjn/aog/internal/types"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
-
-	"intel.com/aog/internal/datastore"
-	"intel.com/aog/internal/types"
 )
 
 // SQLite implements the Datastore interface

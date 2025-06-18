@@ -14,12 +14,12 @@ import (
 	"strings"
 	"time"
 
+	"github.com/ligjn/aog/internal/datastore"
+	"github.com/ligjn/aog/internal/event"
+	"github.com/ligjn/aog/internal/logger"
+	"github.com/ligjn/aog/internal/types"
+	"github.com/ligjn/aog/internal/utils"
 	"github.com/shirou/gopsutil/cpu"
-	"intel.com/aog/internal/datastore"
-	"intel.com/aog/internal/event"
-	"intel.com/aog/internal/logger"
-	"intel.com/aog/internal/types"
-	"intel.com/aog/internal/utils"
 )
 
 type ServiceTaskEventType int
@@ -241,7 +241,6 @@ func (ss *BasicServiceScheduler) dispatch(task *ServiceTask) (*types.ServiceTarg
 
 	sp := &types.ServiceProvider{
 		ProviderName: providerName,
-		
 	}
 	err = ds.Get(context.Background(), sp)
 	if err != nil {

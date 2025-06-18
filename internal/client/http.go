@@ -11,8 +11,8 @@ import (
 	"net/http"
 	"net/url"
 
-	"intel.com/aog/internal/utils/bcode"
-	"intel.com/aog/internal/utils/progress"
+	"github.com/ligjn/aog/internal/utils/bcode"
+	"github.com/ligjn/aog/internal/utils/progress"
 )
 
 type Client struct {

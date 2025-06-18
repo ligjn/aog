@@ -10,12 +10,11 @@ import (
 	"strings"
 
 	"github.com/gin-gonic/gin"
-
-	"intel.com/aog/internal/api/dto"
-	"intel.com/aog/internal/logger"
-	"intel.com/aog/internal/server"
-	"intel.com/aog/internal/types"
-	"intel.com/aog/internal/utils/bcode"
+	"github.com/ligjn/aog/internal/api/dto"
+	"github.com/ligjn/aog/internal/logger"
+	"github.com/ligjn/aog/internal/server"
+	"github.com/ligjn/aog/internal/types"
+	"github.com/ligjn/aog/internal/utils/bcode"
 )
 
 func (t *AOGCoreServer) CreateModel(c *gin.Context) {

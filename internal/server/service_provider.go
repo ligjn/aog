@@ -11,13 +11,13 @@ import (
 	"strings"
 	"time"
 
-	"intel.com/aog/internal/api/dto"
-	"intel.com/aog/internal/datastore"
-	"intel.com/aog/internal/logger"
-	"intel.com/aog/internal/provider"
-	"intel.com/aog/internal/schedule"
-	"intel.com/aog/internal/types"
-	"intel.com/aog/internal/utils/bcode"
+	"github.com/ligjn/aog/internal/api/dto"
+	"github.com/ligjn/aog/internal/datastore"
+	"github.com/ligjn/aog/internal/logger"
+	"github.com/ligjn/aog/internal/provider"
+	"github.com/ligjn/aog/internal/schedule"
+	"github.com/ligjn/aog/internal/types"
+	"github.com/ligjn/aog/internal/utils/bcode"
 )
 
 type ServiceProvider interface {

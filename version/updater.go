@@ -6,7 +6,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"gorm.io/gorm"
 	"io"
 	"log/slog"
 	"net/http"
@@ -19,9 +18,10 @@ import (
 	"strings"
 	"time"
 
-	"intel.com/aog/internal/datastore"
-	"intel.com/aog/internal/types"
-	"intel.com/aog/internal/utils"
+	"github.com/ligjn/aog/internal/datastore"
+	"github.com/ligjn/aog/internal/types"
+	"github.com/ligjn/aog/internal/utils"
+	"gorm.io/gorm"
 )
 
 var (

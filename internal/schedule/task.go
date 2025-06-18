@@ -19,14 +19,14 @@ import (
 	"strings"
 	"time"
 
+	"github.com/ligjn/aog/internal/client/grpc/grpc_client"
+	"github.com/ligjn/aog/internal/convert"
+	"github.com/ligjn/aog/internal/datastore"
+	"github.com/ligjn/aog/internal/event"
+	"github.com/ligjn/aog/internal/logger"
+	"github.com/ligjn/aog/internal/types"
+	"github.com/ligjn/aog/internal/utils"
 	"google.golang.org/grpc"
-	"intel.com/aog/internal/client/grpc/grpc_client"
-	"intel.com/aog/internal/convert"
-	"intel.com/aog/internal/datastore"
-	"intel.com/aog/internal/event"
-	"intel.com/aog/internal/logger"
-	"intel.com/aog/internal/types"
-	"intel.com/aog/internal/utils"
 )
 
 type ServiceTask struct {

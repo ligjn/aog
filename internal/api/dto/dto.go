@@ -3,7 +3,7 @@ package dto
 import (
 	"time"
 
-	"intel.com/aog/internal/utils/bcode"
+	"github.com/ligjn/aog/internal/utils/bcode"
 )
 
 type CreateAIGCServiceRequest struct {

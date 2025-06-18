@@ -6,8 +6,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/go-playground/validator/v10"
-
-	"intel.com/aog/internal/datastore"
+	"github.com/ligjn/aog/internal/datastore"
 )
 
 // Error Code of AOG contains 5 digits, the first 3 digits should be reversed and indicates the category of concept

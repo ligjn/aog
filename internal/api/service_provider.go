@@ -6,10 +6,9 @@ import (
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-
-	"intel.com/aog/internal/api/dto"
-	"intel.com/aog/internal/logger"
-	"intel.com/aog/internal/utils/bcode"
+	"github.com/ligjn/aog/internal/api/dto"
+	"github.com/ligjn/aog/internal/logger"
+	"github.com/ligjn/aog/internal/utils/bcode"
 )
 
 func (t *AOGCoreServer) CreateServiceProvider(c *gin.Context) {

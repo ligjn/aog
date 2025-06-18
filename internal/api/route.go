@@ -13,13 +13,12 @@ import (
 	"runtime"
 
 	"github.com/gin-gonic/gin"
-
-	"intel.com/aog/config"
-	"intel.com/aog/internal/datastore"
-	"intel.com/aog/internal/provider"
-	"intel.com/aog/internal/types"
-	"intel.com/aog/internal/utils"
-	"intel.com/aog/version"
+	"github.com/ligjn/aog/config"
+	"github.com/ligjn/aog/internal/datastore"
+	"github.com/ligjn/aog/internal/provider"
+	"github.com/ligjn/aog/internal/types"
+	"github.com/ligjn/aog/internal/utils"
+	"github.com/ligjn/aog/version"
 )
 
 func InjectRouter(e *AOGCoreServer) {

@@ -13,9 +13,8 @@ import (
 	"regexp"
 
 	jsonata "github.com/blues/jsonata-go"
-
-	"intel.com/aog/internal/logger"
-	"intel.com/aog/internal/types"
+	"github.com/ligjn/aog/internal/logger"
+	"github.com/ligjn/aog/internal/types"
 )
 
 type ConvertContext map[string]any

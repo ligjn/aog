@@ -16,16 +16,15 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/ligjn/aog/config"
+	"github.com/ligjn/aog/internal/convert"
+	"github.com/ligjn/aog/internal/event"
+	"github.com/ligjn/aog/internal/logger"
+	"github.com/ligjn/aog/internal/provider/template"
+	"github.com/ligjn/aog/internal/types"
+	"github.com/ligjn/aog/internal/utils"
+	"github.com/ligjn/aog/version"
 	"gopkg.in/yaml.v3"
-
-	"intel.com/aog/config"
-	"intel.com/aog/internal/convert"
-	"intel.com/aog/internal/event"
-	"intel.com/aog/internal/logger"
-	"intel.com/aog/internal/provider/template"
-	"intel.com/aog/internal/types"
-	"intel.com/aog/internal/utils"
-	"intel.com/aog/version"
 )
 
 // APIFlavor mode is usually set to "default". And set to "stream" if it is using stream mode

@@ -3,8 +3,8 @@ package provider
 import (
 	"context"
 
-	"intel.com/aog/internal/provider/engine"
-	"intel.com/aog/internal/types"
+	"github.com/ligjn/aog/internal/provider/engine"
+	"github.com/ligjn/aog/internal/types"
 )
 
 // ModelServiceProvider local model engine

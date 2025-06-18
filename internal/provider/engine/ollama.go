@@ -13,10 +13,10 @@ import (
 	"strconv"
 	"time"
 
-	"intel.com/aog/internal/client"
-	"intel.com/aog/internal/logger"
-	"intel.com/aog/internal/types"
-	"intel.com/aog/internal/utils"
+	"github.com/ligjn/aog/internal/client"
+	"github.com/ligjn/aog/internal/logger"
+	"github.com/ligjn/aog/internal/types"
+	"github.com/ligjn/aog/internal/utils"
 )
 
 type OllamaProvider struct {

@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"time"
 
-	"intel.com/aog/internal/utils"
+	"github.com/ligjn/aog/internal/utils"
 )
 
 const (

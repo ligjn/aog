@@ -12,10 +12,10 @@ import (
 	"sort"
 	"strings"
 
-	"intel.com/aog/config"
-	"intel.com/aog/internal/logger"
-	"intel.com/aog/internal/types"
-	"intel.com/aog/internal/utils"
+	"github.com/ligjn/aog/config"
+	"github.com/ligjn/aog/internal/logger"
+	"github.com/ligjn/aog/internal/types"
+	"github.com/ligjn/aog/internal/utils"
 )
 
 // A simple event system for UI and logging purpose

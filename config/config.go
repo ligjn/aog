@@ -14,11 +14,10 @@ import (
 
 	"github.com/MatusOllah/slogcolor"
 	"github.com/fatih/color"
+	"github.com/ligjn/aog/internal/client"
+	"github.com/ligjn/aog/internal/utils"
+	"github.com/ligjn/aog/version"
 	"github.com/spf13/pflag"
-
-	"intel.com/aog/internal/client"
-	"intel.com/aog/internal/utils"
-	"intel.com/aog/version"
 )
 
 var GlobalAOGEnvironment *AOGEnvironment
